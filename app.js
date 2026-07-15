@@ -472,7 +472,6 @@ function renderTable() {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       if (!State.purchaseVisible) {
-        showToast("🔒 Enter password and show purchase rates (Alt+P) to delete items", "warning", 3000);
         return;
       }
       const idx = parseInt(btn.dataset.idx);
@@ -505,7 +504,6 @@ function hasDuplicateName(name, excludeIdx = -1) {
 
 function startEdit(cell) {
   if (!State.purchaseVisible) {
-    showToast("🔒 Enter password and show purchase rates (Alt+P) to edit items", "warning", 3000);
     return;
   }
   if (cell.classList.contains('editing')) return;
@@ -1028,7 +1026,6 @@ const apPurchaseRate  = $('apPurchaseRate');
 
 function openAddProduct() {
   if (!State.purchaseVisible) {
-    showToast("🔒 Enter password and show purchase rates (Alt+P) to add products", "warning", 3000);
     return;
   }
   addProductForm.reset();
