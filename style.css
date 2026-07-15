@@ -1247,11 +1247,197 @@ kbd {
 /* ═══════════════════════════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE & MOBILE FLUID DESIGN (Friction-based Touch Motion)
+   - Converts rigid table rows to swipeable/touch-friendly cards
+   - Adds native momentum inertia scrolling
+   - Increases touch target sizes (min 44px)
+   - Keeps interface uncluttered on small screens
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 600px) {
-  .topbar { padding: 0 16px; gap: 10px; }
-  .mode-shortcut { display: none; }
-  .search-input { font-size: 16px; height: 54px; }
-  .result-item-name { font-size: 20px; }
-  .rate-value { font-size: 28px; }
-  .main-content { padding-top: calc(var(--topbar-h) + 28px); }
+  /* Layout tweaks */
+  .topbar { 
+    padding: 0 12px; 
+    gap: 8px; 
+  }
+  .mode-shortcut { 
+    display: none; 
+  }
+  .main-content { 
+    padding-top: calc(var(--topbar-h) + 24px); 
+    padding-bottom: 60px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  /* Search input adjustments */
+  .search-input { 
+    font-size: 16px; 
+    height: 56px; 
+    border-radius: var(--radius);
+    padding: 0 44px 0 48px;
+  }
+  .search-icon {
+    left: 14px;
+  }
+  .search-clear {
+    right: 10px;
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Result card responsive sizing */
+  .result-card {
+    padding: 20px;
+    border-radius: var(--radius);
+  }
+  .result-item-name { 
+    font-size: 20px; 
+  }
+  .rate-value { 
+    font-size: 28px; 
+  }
+  .rate-box {
+    padding: 14px;
+    min-width: 130px;
+  }
+
+  /* Compact Sync Badge on mobile */
+  .sync-badge {
+    padding: 6px;
+    border-radius: 50%;
+  }
+  .sync-badge .sync-label {
+    display: none; /* Hide label to save space, only show icon */
+  }
+
+  /* ─── Responsive Cards Layout (Converts Table) ─── */
+  .items-table-wrap {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  
+  .table-toolbar {
+    background: transparent;
+    padding: 16px 0 12px 0;
+    border-bottom: none;
+  }
+
+  .table-scroll {
+    overflow: visible;
+    -webkit-overflow-scrolling: touch; /* Momentum scrolling physics (friction) */
+  }
+
+  .items-table {
+    display: block;
+    width: 100%;
+  }
+
+  /* Hide table headers on mobile */
+  .items-table thead {
+    display: none;
+  }
+
+  .items-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* Style row as a separate card container */
+  .items-table tbody tr {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  /* Card hover / touch active state */
+  .items-table tbody tr:active,
+  .items-table tbody tr:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 6px 16px var(--accent-glow);
+  }
+
+  /* Table cells display as block layouts */
+  .items-table td {
+    display: block;
+    padding: 4px 0 !important;
+    border-bottom: none !important;
+    width: 100% !important;
+    text-align: left !important;
+  }
+
+  /* Item name is prominent */
+  .items-table td:nth-child(1) {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    padding-right: 76px !important; /* Avoid overlapping top-right edit/delete buttons */
+    white-space: normal;
+  }
+
+  /* Sale rate cell */
+  .items-table td:nth-child(2) {
+    display: inline-block;
+    width: auto !important;
+    margin-right: 18px;
+    font-size: 14px;
+  }
+  .items-table td:nth-child(2)::before {
+    content: "Sale: ";
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* Purchase rate cell */
+  .items-table td:nth-child(3).col-purchase {
+    display: inline-block;
+    width: auto !important;
+    font-size: 14px;
+  }
+  .items-table td:nth-child(3).col-purchase::before {
+    content: "Purchase: ";
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* Float action buttons on the top right corner of the card */
+  .items-table td.td-actions {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 8px;
+    width: auto !important;
+    padding: 0 !important;
+  }
+
+  /* Actions always visible on mobile hover/active state */
+  body.purchase-unlocked tr:hover .row-action-btn,
+  body.purchase-unlocked .row-action-btn {
+    opacity: 1 !important;
+  }
+
+  /* Bigger touch targets for buttons on mobile */
+  .row-action-btn {
+    background-color: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    min-width: 36px;
+    min-height: 36px;
+  }
 }
+
