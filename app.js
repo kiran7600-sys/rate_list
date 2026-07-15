@@ -17,7 +17,6 @@ const State = {
   focusedIdx: -1,
   filteredItems: [],
   settings: {
-    cashProfitMargin: 0,     // % above purchase rate for cash sale
     creditExtraPercent: 5,   // % more than cash rate for credit
     roundUp: true,
   }
@@ -72,7 +71,6 @@ const DOM = {
   settingsOverlay: $('settingsOverlay'),
   settingsPanel: $('settingsPanel'),
   settingsClose: $('settingsClose'),
-  cashProfitMargin: $('cashProfitMargin'),
   creditExtraPercent: $('creditExtraPercent'),
   roundUpToggle: $('roundUpToggle'),
   saveSettings: $('saveSettings'),
@@ -226,19 +224,13 @@ function roundRate(val) {
  * Credit mode adds creditExtraPercent on top.
  */
 function getSaleRate(item) {
-  const margin   = State.settings.cashProfitMargin  || 0;
   const extra    = State.settings.creditExtraPercent || 0;
-  const purchase = parseFloat(item.purchaseRate) || 0;
   const stored   = parseFloat(item.saleRate)    || 0;
 
-  // Step 1: Cash base rate
-  // If profit margin is set AND item has a purchase rate → calculate from purchase
-  // Otherwise use the stored sale rate directly
-  let base = (margin > 0 && purchase > 0)
-    ? purchase * (1 + margin / 100)
-    : stored;
+  // Cash rate is always the stored sale rate directly (profit margin disabled)
+  let base = stored;
 
-  // Step 2: Add credit extra % on top for credit mode
+  // Add credit extra % on top for credit mode
   if (State.mode === 'credit') {
     if (extra > 0) {
       base = base * (1 + extra / 100);
@@ -570,7 +562,6 @@ function startEdit(cell) {
 // UI — SETTINGS
 // ═══════════════════════════════════════════════════════════════
 function openSettings() {
-  DOM.cashProfitMargin.value = State.settings.cashProfitMargin || '';
   DOM.creditExtraPercent.value = State.settings.creditExtraPercent || '';
   DOM.roundUpToggle.checked = State.settings.roundUp !== false;
   DOM.settingsOverlay.classList.add('open');
@@ -583,11 +574,9 @@ function closeSettings() {
 }
 
 function saveSettingsFromUI() {
-  const margin = parseFloat(DOM.cashProfitMargin.value) || 0;
   const extra = parseFloat(DOM.creditExtraPercent.value) || 0;
   const roundUp = DOM.roundUpToggle.checked;
 
-  State.settings.cashProfitMargin = margin;
   State.settings.creditExtraPercent = extra;
   State.settings.roundUp = roundUp;
   saveSettings();
