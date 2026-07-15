@@ -399,6 +399,7 @@ function setPurchaseVisible(visible) {
   }
 
   State.purchaseVisible = visible;
+  DOM.body.classList.toggle('purchase-unlocked', visible);
   DOM.purchaseToggleBtn.classList.toggle('active', visible);
   DOM.ratePurchaseBox.style.display = (visible && State.selectedItem) ? 'block' : 'none';
 
@@ -470,6 +471,10 @@ function renderTable() {
   DOM.itemsTableBody.querySelectorAll('.btn-delete-row').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
+      if (!State.purchaseVisible) {
+        showToast("🔒 Enter password and show purchase rates (Alt+P) to delete items", "warning", 3000);
+        return;
+      }
       const idx = parseInt(btn.dataset.idx);
       const item = State.items[idx];
       if (item && confirm(`Delete "${item.item}"?`)) {
@@ -499,6 +504,10 @@ function hasDuplicateName(name, excludeIdx = -1) {
 }
 
 function startEdit(cell) {
+  if (!State.purchaseVisible) {
+    showToast("🔒 Enter password and show purchase rates (Alt+P) to edit items", "warning", 3000);
+    return;
+  }
   if (cell.classList.contains('editing')) return;
   const idx = parseInt(cell.dataset.idx);
   const field = cell.dataset.field;

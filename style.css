@@ -697,7 +697,7 @@ body.mode-credit .logo-text {
   background-color: rgba(248, 113, 113, 0.15);
 }
 
-tr:hover .row-action-btn {
+body.purchase-unlocked tr:hover .row-action-btn {
   opacity: 1;
 }
 
