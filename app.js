@@ -1107,9 +1107,41 @@ backToTopBtn.addEventListener('click', () => {
 // ═══════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════
+function initAlphabetSidebar() {
+  const sidebar = $('alphabetSidebar');
+  if (!sidebar) return;
+
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  sidebar.innerHTML = letters.map(l => `<div class="alpha-letter" data-letter="${l}">${l}</div>`).join('');
+
+  sidebar.querySelectorAll('.alpha-letter').forEach(el => {
+    el.addEventListener('click', () => {
+      const letter = el.dataset.letter;
+      
+      // Find index of first item starting with this letter
+      const targetIdx = State.items.findIndex(item => 
+        (item.item || '').trim().toUpperCase().startsWith(letter)
+      );
+
+      if (targetIdx !== -1) {
+        const rowEl = DOM.itemsTableBody.querySelector(`tr[data-idx="${targetIdx}"]`);
+        if (rowEl) {
+          rowEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          rowEl.classList.add('highlight-row');
+          setTimeout(() => rowEl.classList.remove('highlight-row'), 1500);
+          showToast(`🔍 Jumped to "${letter}" items`, 'success', 1500);
+        }
+      } else {
+        showToast(`No items starting with "${letter}"`, 'info', 1500);
+      }
+    });
+  });
+}
+
 async function init() {
   loadSettings();
   loadMode();
+  initAlphabetSidebar();
 
   // 1. Load from localStorage immediately (instant UI)
   loadItems();

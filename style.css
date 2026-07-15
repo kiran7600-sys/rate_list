@@ -1299,6 +1299,20 @@ kbd {
   }
 }
 
+/* ─── Alphabet Sidebar ─── */
+.alphabet-sidebar {
+  display: none;
+}
+
+/* Highlight card/row when jumped to */
+.items-table tbody tr.highlight-row {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 16px var(--accent-glow) !important;
+  transform: scale(1.025) translateY(-2px);
+  z-index: 10;
+}
+
+
 /* ═══════════════════════════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════════════════════════ */
@@ -1336,9 +1350,51 @@ kbd {
   .main-content { 
     padding-top: 108px !important; /* Adjust top padding to match taller header */
     padding-bottom: 60px;
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-left: 36px !important; /* Shift main content right to leave room for left sidebar */
+    padding-right: 8px !important;
   }
+
+  /* Sticky alphabetical index on the left */
+  .alphabet-sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    position: fixed;
+    left: 4px;
+    top: 116px;
+    bottom: 24px;
+    width: 24px;
+    z-index: 120;
+    background: rgba(13, 17, 23, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 6px 0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    touch-action: none; /* Disable default touch actions */
+  }
+
+  .alpha-letter {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.15s ease, transform 0.1s ease;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1px 0;
+  }
+
+  .alpha-letter:active {
+    color: var(--accent);
+    transform: scale(1.4);
+  }
+
 
   /* Search input adjustments */
   .search-input { 
