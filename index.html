@@ -14,37 +14,39 @@
 
   <!-- ═══════════════════════════ TOP BAR ═══════════════════════════ -->
   <header class="topbar">
-    <div class="topbar-left">
-      <div class="logo">
-        <img src="logo.jpg" alt="Martand Agro Agency" class="logo-img" />
-        <span class="logo-text">Martand Agro Agency</span>
-      </div>
-      <span class="item-count" id="itemCount">0 items</span>
-      <!-- Firebase Sync Status -->
-      <div class="sync-badge" id="syncBadge" title="Firebase sync status">
-        <span class="sync-icon" id="syncIcon">☁️</span>
-        <span class="sync-label" id="syncLabel">Connecting...</span>
-      </div>
+    <div class="logo">
+      <img src="logo.jpg" alt="Martand Agro Agency" class="logo-img" />
+      <span class="logo-text">Martand Agro Agency</span>
     </div>
-    <div class="topbar-right">
-      <!-- Mode Badge -->
-      <div class="mode-badge" id="modeBadge" title="Press Alt+C to toggle Cash/Credit">
-        <span class="mode-dot"></span>
-        <span class="mode-label" id="modeLabel">CASH</span>
-        <span class="mode-shortcut">Alt+C</span>
+    <div class="topbar-row">
+      <div class="topbar-left">
+        <span class="item-count" id="itemCount">0 items</span>
+        <!-- Firebase Sync Status -->
+        <div class="sync-badge" id="syncBadge" title="Firebase sync status">
+          <span class="sync-icon" id="syncIcon">☁️</span>
+          <span class="sync-label" id="syncLabel">Connecting...</span>
+        </div>
       </div>
-      <!-- Purchase Rate Eye -->
-      <button class="icon-btn" id="purchaseToggleBtn" title="Hold Alt+P to show purchase rate">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-      </button>
-      <!-- Import Button -->
-      <button class="icon-btn" id="importBtn" title="Import Excel / PDF">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      </button>
-      <!-- Settings Button -->
-      <button class="icon-btn" id="settingsBtn" title="Settings">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      </button>
+      <div class="topbar-right">
+        <!-- Mode Badge -->
+        <div class="mode-badge" id="modeBadge" title="Press Alt+C to toggle Cash/Credit">
+          <span class="mode-dot"></span>
+          <span class="mode-label" id="modeLabel">CASH</span>
+          <span class="mode-shortcut">Alt+C</span>
+        </div>
+        <!-- Purchase Rate Eye -->
+        <button class="icon-btn" id="purchaseToggleBtn" title="Hold Alt+P to show purchase rate">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        </button>
+        <!-- Import Button -->
+        <button class="icon-btn" id="importBtn" title="Import Excel / PDF">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </button>
+        <!-- Settings Button -->
+        <button class="icon-btn" id="settingsBtn" title="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
     </div>
   </header>
 

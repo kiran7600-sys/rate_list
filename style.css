@@ -116,6 +116,14 @@ body::after {
   gap: 16px;
 }
 
+.topbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  margin-left: 24px;
+}
+
 .logo {
   display: flex;
   align-items: center;
@@ -1263,14 +1271,29 @@ kbd {
 @media (max-width: 600px) {
   /* Layout tweaks */
   .topbar { 
-    padding: 0 12px; 
-    gap: 8px; 
+    flex-direction: column !important;
+    align-items: stretch !important;
+    height: auto !important;
+    padding: 10px 12px !important;
+    gap: 8px !important;
+  }
+  .logo {
+    width: 100%;
+    margin-bottom: 2px;
+  }
+  .topbar-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-left: 0 !important;
+    gap: 8px;
   }
   .mode-shortcut { 
     display: none; 
   }
   .main-content { 
-    padding-top: calc(var(--topbar-h) + 24px); 
+    padding-top: 108px !important; /* Adjust top padding to match taller header */
     padding-bottom: 60px;
     padding-left: 12px;
     padding-right: 12px;
