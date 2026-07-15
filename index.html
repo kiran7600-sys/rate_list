@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AplRate — Pesticide Rate Finder</title>
+  <meta name="description" content="Fast pesticide item rate finder for your shop. Search items instantly, manage cash and credit rates." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="mode-cash">
+
+  <!-- ═══════════════════════════ TOP BAR ═══════════════════════════ -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo">
+        <span class="logo-icon">🌿</span>
+        <span class="logo-text">AplRate</span>
+      </div>
+      <span class="item-count" id="itemCount">0 items</span>
+      <!-- Firebase Sync Status -->
+      <div class="sync-badge" id="syncBadge" title="Firebase sync status">
+        <span class="sync-icon" id="syncIcon">☁️</span>
+        <span class="sync-label" id="syncLabel">Connecting...</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <!-- Mode Badge -->
+      <div class="mode-badge" id="modeBadge" title="Press Alt+C to toggle Cash/Credit">
+        <span class="mode-dot"></span>
+        <span class="mode-label" id="modeLabel">CASH</span>
+        <span class="mode-shortcut">Alt+C</span>
+      </div>
+      <!-- Purchase Rate Eye -->
+      <button class="icon-btn" id="purchaseToggleBtn" title="Hold Alt+P to show purchase rate">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      </button>
+      <!-- Import Button -->
+      <button class="icon-btn" id="importBtn" title="Import Excel / PDF">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </button>
+      <!-- Settings Button -->
+      <button class="icon-btn" id="settingsBtn" title="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════ SEARCH HERO ═══════════════════════════ -->
+  <main class="main-content">
+    <div class="search-hero">
+      <div class="search-wrapper">
+        <div class="search-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="Search pesticide / item name..."
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button class="search-clear" id="searchClear" title="Clear">✕</button>
+      </div>
+
+      <!-- Dropdown Results -->
+      <div class="search-dropdown" id="searchDropdown">
+        <div class="dropdown-inner" id="dropdownInner"></div>
+      </div>
+    </div>
+
+    <!-- ─── Result Table (shown after selecting item or Enter) ─── -->
+    <div class="result-area" id="resultArea" style="display:none">
+      <div class="result-card" id="resultCard">
+        <div class="result-header">
+          <div class="result-item-name" id="resItemName">—</div>
+        </div>
+        <div class="result-rates">
+          <div class="rate-box rate-sale">
+            <div class="rate-label">Sale Rate</div>
+            <div class="rate-value" id="resSaleRate">₹ —</div>
+          </div>
+          <div class="rate-box rate-purchase" id="ratePurchaseBox" style="display:none">
+            <div class="rate-label">Purchase Rate</div>
+            <div class="rate-value" id="resPurchaseRate">₹ —</div>
+          </div>
+        </div>
+        <div class="result-meta" id="resultMeta"></div>
+      </div>
+    </div>
+
+    <!-- ─── Empty State ─── -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">📋</div>
+      <h2>No items yet</h2>
+      <p>Add items manually or upload an Excel file</p>
+      <div class="empty-actions">
+        <button class="btn-primary" id="emptyAddBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Product
+        </button>
+        <button class="btn-ghost" id="emptyImportBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Import Excel
+        </button>
+      </div>
+    </div>
+
+    <!-- ─── Items Table ─── -->
+    <div class="items-table-wrap" id="itemsTableWrap" style="display:none">
+      <div class="table-toolbar">
+        <span class="table-title">All Items</span>
+        <div class="toolbar-actions">
+          <button class="btn-primary btn-sm" id="addProductBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Product
+          </button>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table class="items-table" id="itemsTable">
+          <thead>
+            <tr>
+              <th>Item Name</th>
+              <th>Sale Rate (₹)</th>
+              <th class="col-purchase" id="thPurchase" style="display:none">Purchase Rate (₹)</th>
+              <th class="col-actions" style="width: 100px; text-align: right;"></th>
+            </tr>
+          </thead>
+          <tbody id="itemsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════ ADD PRODUCT MODAL ═══════════════════════════ -->
+  <div class="modal-overlay" id="addProductModal">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2>➕ Add Product</h2>
+      </div>
+      <div class="modal-body">
+        <form id="addProductForm" autocomplete="off">
+          <div class="form-group">
+            <label for="apItemName">Item Name <span class="required">*</span></label>
+            <input type="text" id="apItemName" class="setting-input" placeholder="e.g. Chlorpyrifos 20% EC" required />
+          </div>
+          <div class="form-group">
+            <label for="apSaleRate">Sale Rate (₹) <span class="required">*</span></label>
+            <input type="number" id="apSaleRate" class="setting-input" placeholder="e.g. 450" min="0" step="0.01" required />
+          </div>
+          <div class="form-group">
+            <label for="apPurchaseRate">Purchase Rate (₹)</label>
+            <input type="number" id="apPurchaseRate" class="setting-input" placeholder="e.g. 380" min="0" step="0.01" />
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn-ghost" id="addProductCancel">Cancel</button>
+            <button type="submit" class="btn-primary" id="addProductSubmit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Product
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════ IMPORT MODAL ═══════════════════════════ -->
+  <div class="modal-overlay" id="importModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Import Items</h2>
+        <button class="modal-close" id="importModalClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="drop-zone" id="dropZone">
+          <div class="drop-icon">📂</div>
+          <p class="drop-title">Drop your file here</p>
+          <p class="drop-sub">Supports <strong>.xlsx</strong>, <strong>.xls</strong> (recommended) and text-based <strong>.pdf</strong></p>
+          <button class="btn-primary" id="browseBtn">Browse File</button>
+          <input type="file" id="fileInput" accept=".xlsx,.xls,.pdf,.csv" style="display:none" />
+        </div>
+        <div class="import-info">
+          <p>📌 <strong>Required columns:</strong> Item, Size, Sale Rate, Purchase Rate</p>
+          <p>⚠️ Scanned/image PDFs cannot be read — use Excel for best results</p>
+        </div>
+        <div class="import-progress" id="importProgress" style="display:none">
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+          <span id="progressText">Processing...</span>
+        </div>
+        <div class="import-preview" id="importPreview" style="display:none">
+          <h3 id="previewTitle"></h3>
+          <div class="preview-scroll">
+            <table class="preview-table" id="previewTable"></table>
+          </div>
+          <div class="preview-actions">
+            <button class="btn-ghost" id="cancelImport">Cancel</button>
+            <button class="btn-primary" id="confirmImport">✅ Import All Items</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════ SETTINGS PANEL ═══════════════════════════ -->
+  <div class="settings-overlay" id="settingsOverlay"></div>
+  <aside class="settings-panel" id="settingsPanel">
+    <div class="settings-header">
+      <h2>⚙️ Settings</h2>
+      <button class="modal-close" id="settingsClose">✕</button>
+    </div>
+    <div class="settings-body">
+
+      <section class="settings-section">
+        <h3>💰 Rate Settings</h3>
+        <div class="setting-row">
+          <label for="cashProfitMargin">Cash Profit Margin (%)</label>
+          <div class="input-hint">How much % above purchase price is the cash sale rate</div>
+          <input type="number" id="cashProfitMargin" class="setting-input" min="0" max="500" placeholder="e.g. 15" />
+        </div>
+        <div class="setting-row">
+          <label for="creditExtraPercent">Credit Extra (%)</label>
+          <div class="input-hint">How much % more than cash rate for credit customers</div>
+          <input type="number" id="creditExtraPercent" class="setting-input" min="0" max="200" placeholder="e.g. 5" />
+        </div>
+        <div class="setting-row">
+          <label>Round Up Rates</label>
+          <div class="input-hint">All rates rounded UP to next whole number (₹10.1 → ₹11)</div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="roundUpToggle" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <h3>⌨️ Keyboard Shortcuts</h3>
+        <div class="shortcut-list">
+          <div class="shortcut-row">
+            <span>Toggle Cash / Credit</span>
+            <kbd>Alt + C</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span>Show / Hide Purchase Rate</span>
+            <kbd>Alt + P</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span>Focus Search</span>
+            <kbd>Ctrl + K</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span>Open Import</span>
+            <kbd>Ctrl + I</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span>Open Settings</span>
+            <kbd>Ctrl + ,</kbd>
+          </div>
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <h3>🗂️ Data</h3>
+        <button class="btn-danger" id="clearAllData">🗑 Clear All Data</button>
+      </section>
+
+      <div class="settings-save">
+        <button class="btn-primary" id="saveSettings">Save Settings</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════ TOAST ═══════════════════════════ -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ═══════════════════════════ SCRIPTS ═══════════════════════════ -->
+  <!-- SheetJS for Excel parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- PDF.js for text PDF parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  <script>
+    if (typeof pdfjsLib !== 'undefined') {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+    }
+  </script>
+  <!-- Firebase SDKs (compat mode) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
