@@ -715,6 +715,17 @@ body.purchase-unlocked tr:hover .row-action-btn {
   opacity: 1;
 }
 
+/* Hide Add Product buttons unless purchase rates are unlocked */
+#emptyAddBtn, #addProductBtn {
+  display: none !important;
+}
+
+body.purchase-unlocked #emptyAddBtn,
+body.purchase-unlocked #addProductBtn {
+  display: inline-flex !important;
+}
+
+
 
 .inline-edit-input {
   width: 100%;

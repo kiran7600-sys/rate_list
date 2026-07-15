@@ -1027,6 +1027,10 @@ const apSaleRate      = $('apSaleRate');
 const apPurchaseRate  = $('apPurchaseRate');
 
 function openAddProduct() {
+  if (!State.purchaseVisible) {
+    showToast("🔒 Enter password and show purchase rates (Alt+P) to add products", "warning", 3000);
+    return;
+  }
   addProductForm.reset();
   addProductModal.classList.add('open');
   setTimeout(() => apItemName.focus(), 100);
