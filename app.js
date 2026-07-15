@@ -74,7 +74,6 @@ const DOM = {
   creditExtraPercent: $('creditExtraPercent'),
   roundUpToggle: $('roundUpToggle'),
   saveSettings: $('saveSettings'),
-  clearAllData: $('clearAllData'),
 
   toastContainer: $('toastContainer'),
   syncBadge: $('syncBadge'),
@@ -1106,21 +1105,6 @@ DOM.settingsClose.addEventListener('click', closeSettings);
 DOM.settingsOverlay.addEventListener('click', closeSettings);
 DOM.saveSettings.addEventListener('click', saveSettingsFromUI);
 
-DOM.clearAllData.addEventListener('click', () => {
-  if (confirm('Clear all item data? This cannot be undone.')) {
-    State.items = [];
-    saveItems();
-    State.selectedItem = null;
-    DOM.resultArea.style.display = 'none';
-    DOM.searchInput.value = '';
-    State.searchQuery = '';
-    DOM.searchClear.classList.remove('visible');
-    closeDropdown();
-    renderTable();
-    closeSettings();
-    showToast('🗑 All data cleared', 'info');
-  }
-});
 
 
 // ─── Back to Top Button ───
