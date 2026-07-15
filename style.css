@@ -695,9 +695,8 @@ body.mode-credit .logo-text {
   padding: 6px 8px;
   font-size: 14px;
   border-radius: 6px;
-  opacity: 0;
+  display: none; /* Hidden by default */
   transition: opacity 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
-  display: inline-flex;
   align-items: center;
   justify-content: center;
 }
@@ -712,6 +711,7 @@ body.mode-credit .logo-text {
 }
 
 body.purchase-unlocked tr:hover .row-action-btn {
+  display: inline-flex;
   opacity: 1;
 }
 
@@ -1467,6 +1467,7 @@ kbd {
   /* Actions always visible on mobile hover/active state */
   body.purchase-unlocked tr:hover .row-action-btn,
   body.purchase-unlocked .row-action-btn {
+    display: inline-flex !important;
     opacity: 1 !important;
   }
 
