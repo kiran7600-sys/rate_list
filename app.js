@@ -102,6 +102,7 @@ const FB_CONFIG = {
 
 let db = null;
 const FB_DOC_PATH = { collection: 'shopData', doc: 'items' };
+const FB_SETTINGS_PATH = { collection: 'shopData', doc: 'settings' };
 
 function initFirebase() {
   try {
@@ -165,6 +166,42 @@ async function loadFromFirestore() {
   }
 }
 
+// Save settings to Firestore
+async function saveSettingsToFirestore(settings) {
+  if (!db) return;
+  try {
+    await db.collection(FB_SETTINGS_PATH.collection)
+      .doc(FB_SETTINGS_PATH.doc)
+      .set({ settings, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+  } catch (e) {
+    console.error('Firestore settings save error:', e);
+  }
+}
+
+// Load settings from Firestore
+async function loadSettingsFromFirestore() {
+  if (!db) return false;
+  try {
+    const snap = await db.collection(FB_SETTINGS_PATH.collection)
+      .doc(FB_SETTINGS_PATH.doc)
+      .get();
+    if (snap.exists && snap.data().settings) {
+      State.settings = { ...State.settings, ...snap.data().settings };
+      // Also cache locally
+      try { localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(State.settings)); } catch (e) {}
+      
+      // Update UI elements in settings panel
+      if (DOM.creditExtraPercent) DOM.creditExtraPercent.value = State.settings.creditExtraPercent || '';
+      if (DOM.roundUpToggle) DOM.roundUpToggle.checked = State.settings.roundUp !== false;
+      return true;
+    }
+  } catch (e) {
+    console.error('Firestore settings load error:', e);
+  }
+  return false;
+}
+
+
 // ═══════════════════════════════════════════════════════════════
 // PERSISTENCE (localStorage — used as offline cache)
 // ═══════════════════════════════════════════════════════════════
@@ -202,6 +239,7 @@ function loadItems() {
 
 function saveSettings() {
   try { localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(State.settings)); } catch (e) {}
+  saveSettingsToFirestore(State.settings);
 }
 
 function loadSettings() {
@@ -1153,6 +1191,7 @@ async function init() {
 
   // 2. Init Firebase and load fresh data from cloud
   initFirebase();
+  await loadSettingsFromFirestore();
   const loaded = await loadFromFirestore();
   if (loaded) {
     applyMode();
