@@ -401,14 +401,6 @@ function setPurchaseVisible(visible) {
     el.style.display = visible ? '' : 'none';
   });
 
-  // Show/hide reveal banner
-  if (!revealBanner) {
-    revealBanner = document.createElement('div');
-    revealBanner.className = 'purchase-reveal-banner';
-    revealBanner.textContent = '🔓 Purchase Rate Visible';
-    document.body.appendChild(revealBanner);
-  }
-  revealBanner.classList.toggle('visible', visible);
 }
 
 // ═══════════════════════════════════════════════════════════════
