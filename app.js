@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   AplRate — Pesticide Shop Rate Finder
+   Martand Agro Agency — Pesticide Shop Rate Finder
    app.js — Full Application Logic
 ═══════════════════════════════════════════════════════════════ */
 
