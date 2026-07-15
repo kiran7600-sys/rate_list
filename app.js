@@ -444,18 +444,12 @@ function renderTable() {
     `;
   }).join('');
 
-  // Attach click-to-edit listeners
-  DOM.itemsTableBody.querySelectorAll('.td-editable').forEach(cell => {
-    cell.addEventListener('click', () => startEdit(cell));
-  });
-
   // Attach row edit button listeners
   DOM.itemsTableBody.querySelectorAll('.btn-edit-row').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const idx = parseInt(btn.dataset.idx);
-      const cell = DOM.itemsTableBody.querySelector(`tr[data-idx="${idx}"] td[data-field="item"]`);
-      if (cell) startEdit(cell);
+      openEditProduct(idx);
     });
   });
 
@@ -494,68 +488,74 @@ function hasDuplicateName(name, excludeIdx = -1) {
   });
 }
 
-function startEdit(cell) {
-  if (!State.purchaseVisible) {
-    return;
-  }
-  if (cell.classList.contains('editing')) return;
-  const idx = parseInt(cell.dataset.idx);
-  const field = cell.dataset.field;
+// ═══════════════════════════════════════════════════════════════
+// UI — EDIT PRODUCT MODAL
+// ═══════════════════════════════════════════════════════════════
+const editProductModal = $('editProductModal');
+const editProductForm  = $('editProductForm');
+const epIdx            = $('epIdx');
+const epItemName      = $('epItemName');
+const epSaleRate      = $('epSaleRate');
+const epPurchaseRate  = $('epPurchaseRate');
+
+function openEditProduct(idx) {
+  if (!State.purchaseVisible) return; // Silent return if locked
   const item = State.items[idx];
   if (!item) return;
 
-  // Current raw value
-  const currentVal = field === 'item' ? (item.item || '') : (parseFloat(item[field]) || 0);
+  epIdx.value = idx;
+  epItemName.value = item.item || '';
+  epSaleRate.value = item.saleRate || 0;
+  epPurchaseRate.value = item.purchaseRate || 0;
 
-  cell.classList.add('editing');
-  cell.innerHTML = `
-    <input
-      class="inline-edit-input"
-      type="${field === 'item' ? 'text' : 'number'}"
-      value="${currentVal}"
-      ${field !== 'item' ? 'min="0" step="0.01"' : ''}
-    />
-  `;
-
-  const input = cell.querySelector('.inline-edit-input');
-  input.focus();
-  input.select();
-
-  function commit() {
-    const raw = input.value.trim();
-    if (raw === '') { cancelEdit(cell, item, field); return; }
-
-    if (field === 'item') {
-      if (hasDuplicateName(raw, idx)) {
-        showToast(`❌ Error: Product "${raw}" already exists!`, 'error', 4000);
-        cancelEdit(cell, item, field);
-        return;
-      }
-      State.items[idx].item = raw;
-    } else {
-      State.items[idx][field] = parseFloat(raw) || 0;
-    }
-    saveItems(); // saves to localStorage + Firestore
-    renderTable();
-    // If this was the selected item, refresh result card
-    if (State.selectedItem && State.selectedItem === item) {
-      State.selectedItem = State.items[idx];
-      renderResultCard(State.selectedItem);
-    }
-    showToast('✅ Saved', 'success', 1500);
-  }
-
-  function cancelEdit(cell, item, field) {
-    renderTable();
-  }
-
-  input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); commit(); }
-    if (e.key === 'Escape') { renderTable(); }
-  });
-
-  input.addEventListener('blur', commit);
+  editProductModal.classList.add('open');
+  setTimeout(() => epItemName.focus(), 100);
 }
+
+function closeEditProduct() {
+  editProductModal.classList.remove('open');
+  editProductForm.reset();
+}
+
+$('editProductCancel').addEventListener('click', closeEditProduct);
+editProductModal.addEventListener('click', e => { if (e.target === editProductModal) closeEditProduct(); });
+
+editProductForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const idx = parseInt(epIdx.value);
+  const name = epItemName.value.trim();
+  const sale = parseFloat(epSaleRate.value) || 0;
+  const purchase = parseFloat(epPurchaseRate.value) || 0;
+
+  if (isNaN(idx) || !State.items[idx]) return;
+  if (!name) { epItemName.focus(); return; }
+  if (!sale)  { epSaleRate.focus(); return; }
+
+  // Check duplicate (excluding self)
+  if (hasDuplicateName(name, idx)) {
+    showToast(`❌ Error: Product "${name}" already exists!`, 'error', 4000);
+    epItemName.focus();
+    epItemName.select();
+    return;
+  }
+
+  const oldItem = State.items[idx];
+  State.items[idx] = { item: name, saleRate: sale, purchaseRate: purchase };
+  
+  saveItems();
+  renderTable();
+  closeEditProduct();
+  
+  // Refresh selected item result card if active
+  if (State.selectedItem && State.selectedItem.item === oldItem.item) {
+    State.selectedItem = State.items[idx];
+    renderResultCard(State.selectedItem);
+  }
+  
+  showToast(`✅ "${name}" updated!`, 'success');
+  DOM.searchInput.focus();
+});
+
 
 
 // ═══════════════════════════════════════════════════════════════

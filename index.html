@@ -170,6 +170,36 @@
     </div>
   </div>
 
+  <!-- ═══════════════════════════ EDIT PRODUCT MODAL ═══════════════════════════ -->
+  <div class="modal-overlay" id="editProductModal">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2>✏️ Edit Product</h2>
+      </div>
+      <div class="modal-body">
+        <form id="editProductForm" autocomplete="off">
+          <input type="hidden" id="epIdx" />
+          <div class="form-group">
+            <label for="epItemName">Item Name <span class="required">*</span></label>
+            <input type="text" id="epItemName" class="setting-input" required />
+          </div>
+          <div class="form-group">
+            <label for="epSaleRate">Sale Rate (₹) <span class="required">*</span></label>
+            <input type="number" id="epSaleRate" class="setting-input" min="0" step="0.01" required />
+          </div>
+          <div class="form-group">
+            <label for="epPurchaseRate">Purchase Rate (₹)</label>
+            <input type="number" id="epPurchaseRate" class="setting-input" min="0" step="0.01" />
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn-ghost" id="editProductCancel">Cancel</button>
+            <button type="submit" class="btn-primary" id="editProductSubmit">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- ═══════════════════════════ IMPORT MODAL ═══════════════════════════ -->
   <div class="modal-overlay" id="importModal">
     <div class="modal">
