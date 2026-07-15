@@ -149,6 +149,7 @@ async function loadFromFirestore() {
       .get();
     if (snap.exists && snap.data().list && snap.data().list.length > 0) {
       State.items = snap.data().list;
+      sortItems();
       // Also cache locally
       try { localStorage.setItem(STORAGE_KEYS.items, JSON.stringify(State.items)); } catch (e) {}
       setSyncStatus('synced', '✓', `${State.items.length} items`);
@@ -173,7 +174,16 @@ const STORAGE_KEYS = {
   mode: 'aplrate_mode',
 };
 
+function sortItems() {
+  State.items.sort((a, b) => {
+    const nameA = (a.item || '').toLowerCase().trim();
+    const nameB = (b.item || '').toLowerCase().trim();
+    return nameA.localeCompare(nameB);
+  });
+}
+
 function saveItems() {
+  sortItems();
   // Save to localStorage (instant cache)
   try { localStorage.setItem(STORAGE_KEYS.items, JSON.stringify(State.items)); } catch (e) {}
   // Save to Firestore (cloud)
@@ -183,7 +193,10 @@ function saveItems() {
 function loadItems() {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.items);
-    if (raw) State.items = JSON.parse(raw);
+    if (raw) {
+      State.items = JSON.parse(raw);
+      sortItems();
+    }
   } catch (e) { State.items = []; }
 }
 
